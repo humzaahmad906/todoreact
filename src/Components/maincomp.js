@@ -29,7 +29,11 @@ class TodoList extends React.Component{
 
     }
     createTodo = () => {
+
         todoStore.createTodo(this.state.text);
+        this.setState({
+            text:  this.state.text
+        })
 
     }
     textUpdate = (e) => {
