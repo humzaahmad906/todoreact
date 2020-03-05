@@ -1,0 +1,417 @@
+Index: src/App.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/App.js	(date 1583395162000)
++++ src/App.js	(date 1583403043000)
+@@ -1,10 +1,14 @@
+ import React from 'react';
+ import logo from './logo.svg';
++// import Button from 'react-bootstrap/Button'
++import 'bootstrap/dist/css/bootstrap.min.css';
++import TodoList from './Components/maincomp'
+ import './App.css';
+ 
+ function App() {
+   return (
+     <div className="App">
++      <TodoList />
+       <header className="App-header">
+         <img src={logo} className="App-logo" alt="logo" />
+         <p>
+Index: package.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- package.json	(date 1583395162000)
++++ package.json	(date 1583406554000)
+@@ -6,7 +6,10 @@
+     "@testing-library/jest-dom": "^4.2.4",
+     "@testing-library/react": "^9.5.0",
+     "@testing-library/user-event": "^7.2.1",
++    "bootstrap": "^4.4.1",
++    "flux": "^3.1.3",
+     "react": "^16.13.0",
++    "react-bootstrap": "^1.0.0-beta.17",
+     "react-dom": "^16.13.0",
+     "react-scripts": "3.4.0"
+   },
+Index: src/dispatcher.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/dispatcher.js	(date 1583409853000)
++++ src/dispatcher.js	(date 1583409853000)
+@@ -0,0 +1,3 @@
++import { Dispatcher } from 'flux';
++const dispatcher  = new Dispatcher();
++export default dispatcher;
+\ No newline at end of file
+Index: src/Stores/mainstore.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/Stores/mainstore.js	(date 1583417262000)
++++ src/Stores/mainstore.js	(date 1583417262000)
+@@ -0,0 +1,29 @@
++import dispatcher from '../dispatcher';
++import {EventEmitter} from 'events';
++import * as TodoActions from  '../Actions/mainactions';
++class TodoStore extends EventEmitter{
++    constructor(props){
++        super(props);
++        this.todoList = []
++
++
++    }
++    createTodo(text){
++        // this.todoElement.text = text;
++        // this.todoElement.id = Date.now();
++        // this.todoList.push(this.todoElement);
++        // this.todoElement.text = "";
++        // this.todoElement.id = null;
++        this.emit(TodoActions.eventsAvailable.objectAdded);
++    }
++    handleAction = (action) => {
++        switch(action.type){
++            case TodoActions.eventsAvailable.objectAdded:
++                this.createTodo("hmm");
++                break;
++        }
++    }
++}
++const todoStore = new TodoStore();
++dispatcher.register(todoStore.handleAction);
++export default todoStore;
+\ No newline at end of file
+Index: src/Actions/mainactions.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/Actions/mainactions.js	(date 1583413492000)
++++ src/Actions/mainactions.js	(date 1583413492000)
+@@ -0,0 +1,10 @@
++import dispatcher from '../dispatcher';
++export const eventsAvailable = {
++    objectAdded: "ELEMENT_ADDED",
++}
++export function createTodo(text){
++    dispatcher.dispatch({
++        type: "ELEMENT_ADDED",
++        text
++    })
++}
+Index: package-lock.json
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- package-lock.json	(date 1583395162000)
++++ package-lock.json	(date 1583406555000)
+@@ -1285,6 +1285,16 @@
+       "resolved": "https://registry.npmjs.org/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz",
+       "integrity": "sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw=="
+     },
++    "@restart/context": {
++      "version": "2.1.4",
++      "resolved": "https://registry.npmjs.org/@restart/context/-/context-2.1.4.tgz",
++      "integrity": "sha512-INJYZQJP7g+IoDUh/475NlGiTeMfwTXUEr3tmRneckHIxNolGOW9CTq83S8cxq0CgJwwcMzMJFchxvlwe7Rk8Q=="
++    },
++    "@restart/hooks": {
++      "version": "0.3.21",
++      "resolved": "https://registry.npmjs.org/@restart/hooks/-/hooks-0.3.21.tgz",
++      "integrity": "sha512-Wcu3CFJV+iiqPEIoPVx3/CYnZBRgPeRABo6bLJByRH9ptJXyObn7WYPG7Rv0cg3+55bqcBbG0xEfovzwE2PNXg=="
++    },
+     "@sheerun/mutationobserver-shim": {
+       "version": "0.3.2",
+       "resolved": "https://registry.npmjs.org/@sheerun/mutationobserver-shim/-/mutationobserver-shim-0.3.2.tgz",
+@@ -2788,6 +2798,11 @@
+       "resolved": "https://registry.npmjs.org/boolbase/-/boolbase-1.0.0.tgz",
+       "integrity": "sha1-aN/1++YMUes3cl6p4+0xDcwed24="
+     },
++    "bootstrap": {
++      "version": "4.4.1",
++      "resolved": "https://registry.npmjs.org/bootstrap/-/bootstrap-4.4.1.tgz",
++      "integrity": "sha512-tbx5cHubwE6e2ZG7nqM3g/FZ5PQEDMWmMGNrCUBVRPHXTJaH7CBDdsLeu3eCh3B1tzAxTnAbtmrzvWEvT2NNEA=="
++    },
+     "brace-expansion": {
+       "version": "1.1.11",
+       "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-1.1.11.tgz",
+@@ -3215,6 +3230,11 @@
+         }
+       }
+     },
++    "classnames": {
++      "version": "2.2.6",
++      "resolved": "https://registry.npmjs.org/classnames/-/classnames-2.2.6.tgz",
++      "integrity": "sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q=="
++    },
+     "clean-css": {
+       "version": "4.2.3",
+       "resolved": "https://registry.npmjs.org/clean-css/-/clean-css-4.2.3.tgz",
+@@ -4215,6 +4235,15 @@
+         "utila": "~0.4"
+       }
+     },
++    "dom-helpers": {
++      "version": "5.1.3",
++      "resolved": "https://registry.npmjs.org/dom-helpers/-/dom-helpers-5.1.3.tgz",
++      "integrity": "sha512-nZD1OtwfWGRBWlpANxacBEZrEuLa16o1nh7YopFWeoF68Zt8GGEmzHu6Xv4F3XaFIC+YXtTLrzgqKxFgLEe4jw==",
++      "requires": {
++        "@babel/runtime": "^7.6.3",
++        "csstype": "^2.6.7"
++      }
++    },
+     "dom-serializer": {
+       "version": "0.2.2",
+       "resolved": "https://registry.npmjs.org/dom-serializer/-/dom-serializer-0.2.2.tgz",
+@@ -4381,6 +4410,14 @@
+       "resolved": "https://registry.npmjs.org/encodeurl/-/encodeurl-1.0.2.tgz",
+       "integrity": "sha1-rT/0yG7C0CkyL1oCw6mmBslbP1k="
+     },
++    "encoding": {
++      "version": "0.1.12",
++      "resolved": "https://registry.npmjs.org/encoding/-/encoding-0.1.12.tgz",
++      "integrity": "sha1-U4tm8+5izRq1HsMjgp0flIDHS+s=",
++      "requires": {
++        "iconv-lite": "~0.4.13"
++      }
++    },
+     "end-of-stream": {
+       "version": "1.4.4",
+       "resolved": "https://registry.npmjs.org/end-of-stream/-/end-of-stream-1.4.4.tgz",
+@@ -5343,6 +5380,43 @@
+         "bser": "2.1.1"
+       }
+     },
++    "fbemitter": {
++      "version": "2.1.1",
++      "resolved": "https://registry.npmjs.org/fbemitter/-/fbemitter-2.1.1.tgz",
++      "integrity": "sha1-Uj4U/a9SSIBbsC9i78M75wP1GGU=",
++      "requires": {
++        "fbjs": "^0.8.4"
++      }
++    },
++    "fbjs": {
++      "version": "0.8.17",
++      "resolved": "https://registry.npmjs.org/fbjs/-/fbjs-0.8.17.tgz",
++      "integrity": "sha1-xNWY6taUkRJlPWWIsBpc3Nn5D90=",
++      "requires": {
++        "core-js": "^1.0.0",
++        "isomorphic-fetch": "^2.1.1",
++        "loose-envify": "^1.0.0",
++        "object-assign": "^4.1.0",
++        "promise": "^7.1.1",
++        "setimmediate": "^1.0.5",
++        "ua-parser-js": "^0.7.18"
++      },
++      "dependencies": {
++        "core-js": {
++          "version": "1.2.7",
++          "resolved": "https://registry.npmjs.org/core-js/-/core-js-1.2.7.tgz",
++          "integrity": "sha1-ZSKUwUZR2yj6k70tX/KYOk8IxjY="
++        },
++        "promise": {
++          "version": "7.3.1",
++          "resolved": "https://registry.npmjs.org/promise/-/promise-7.3.1.tgz",
++          "integrity": "sha512-nolQXZ/4L+bP/UGlkfaIujX9BKxGwmQ9OT4mOt5yvy8iK1h3wqTEJCijzGANTCCl9nWjY41juyAn2K3Q1hLLTg==",
++          "requires": {
++            "asap": "~2.0.3"
++          }
++        }
++      }
++    },
+     "figgy-pudding": {
+       "version": "3.5.1",
+       "resolved": "https://registry.npmjs.org/figgy-pudding/-/figgy-pudding-3.5.1.tgz",
+@@ -5499,6 +5573,15 @@
+         }
+       }
+     },
++    "flux": {
++      "version": "3.1.3",
++      "resolved": "https://registry.npmjs.org/flux/-/flux-3.1.3.tgz",
++      "integrity": "sha1-0jvtUVp5oi2TOrU6tK2hnQWy8Io=",
++      "requires": {
++        "fbemitter": "^2.0.0",
++        "fbjs": "^0.8.0"
++      }
++    },
+     "follow-redirects": {
+       "version": "1.10.0",
+       "resolved": "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.10.0.tgz",
+@@ -6652,6 +6735,15 @@
+       "resolved": "https://registry.npmjs.org/isobject/-/isobject-3.0.1.tgz",
+       "integrity": "sha1-TkMekrEalzFjaqH5yNHMvP2reN8="
+     },
++    "isomorphic-fetch": {
++      "version": "2.2.1",
++      "resolved": "https://registry.npmjs.org/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz",
++      "integrity": "sha1-YRrhrPFPXoH3KVB0coGf6XM1WKk=",
++      "requires": {
++        "node-fetch": "^1.0.1",
++        "whatwg-fetch": ">=0.10.0"
++      }
++    },
+     "isstream": {
+       "version": "0.1.2",
+       "resolved": "https://registry.npmjs.org/isstream/-/isstream-0.1.2.tgz",
+@@ -8569,6 +8661,15 @@
+         "tslib": "^1.10.0"
+       }
+     },
++    "node-fetch": {
++      "version": "1.7.3",
++      "resolved": "https://registry.npmjs.org/node-fetch/-/node-fetch-1.7.3.tgz",
++      "integrity": "sha512-NhZ4CsKx7cYm2vSrBAr2PvFOe6sWDf0UYLRqA6svUYg7+/TSfVAu49jYC4BvQ4Sms9SZgdqGBgroqfDhJdTyKQ==",
++      "requires": {
++        "encoding": "^0.1.11",
++        "is-stream": "^1.0.1"
++      }
++    },
+     "node-forge": {
+       "version": "0.9.0",
+       "resolved": "https://registry.npmjs.org/node-forge/-/node-forge-0.9.0.tgz",
+@@ -9291,6 +9392,11 @@
+         "ts-pnp": "^1.1.2"
+       }
+     },
++    "popper.js": {
++      "version": "1.16.1",
++      "resolved": "https://registry.npmjs.org/popper.js/-/popper.js-1.16.1.tgz",
++      "integrity": "sha512-Wb4p1J4zyFTbM+u6WuO4XstYx4Ky9Cewe4DWrel7B0w6VVICvPwdOpotjzcf6eD8TsckVnIMNONQyPIUFOUbCQ=="
++    },
+     "portfinder": {
+       "version": "1.0.25",
+       "resolved": "https://registry.npmjs.org/portfinder/-/portfinder-1.0.25.tgz",
+@@ -10335,6 +10441,15 @@
+         "react-is": "^16.8.1"
+       }
+     },
++    "prop-types-extra": {
++      "version": "1.1.1",
++      "resolved": "https://registry.npmjs.org/prop-types-extra/-/prop-types-extra-1.1.1.tgz",
++      "integrity": "sha512-59+AHNnHYCdiC+vMwY52WmvP5dM3QLeoumYuEyceQDi9aEhtwN9zIQ2ZNo25sMyXnbh32h+P1ezDsUpUH3JAew==",
++      "requires": {
++        "react-is": "^16.3.2",
++        "warning": "^4.0.0"
++      }
++    },
+     "proxy-addr": {
+       "version": "2.0.6",
+       "resolved": "https://registry.npmjs.org/proxy-addr/-/proxy-addr-2.0.6.tgz",
+@@ -10507,6 +10622,27 @@
+         "whatwg-fetch": "^3.0.0"
+       }
+     },
++    "react-bootstrap": {
++      "version": "1.0.0-beta.17",
++      "resolved": "https://registry.npmjs.org/react-bootstrap/-/react-bootstrap-1.0.0-beta.17.tgz",
++      "integrity": "sha512-7VP9doezV4rX0EcajzMvyD6ywtrLfulF3ZAev+uTx8syWQybUkccOpecUO5kPomng/bJMgK/h+44PkZ15Dv44g==",
++      "requires": {
++        "@babel/runtime": "^7.4.2",
++        "@restart/context": "^2.1.4",
++        "@restart/hooks": "^0.3.11",
++        "@types/react": "^16.8.23",
++        "classnames": "^2.2.6",
++        "dom-helpers": "^5.1.2",
++        "invariant": "^2.2.4",
++        "popper.js": "^1.16.0",
++        "prop-types": "^15.7.2",
++        "prop-types-extra": "^1.1.0",
++        "react-overlays": "^2.1.0",
++        "react-transition-group": "^4.0.0",
++        "uncontrollable": "^7.0.0",
++        "warning": "^4.0.3"
++      }
++    },
+     "react-dev-utils": {
+       "version": "10.2.0",
+       "resolved": "https://registry.npmjs.org/react-dev-utils/-/react-dev-utils-10.2.0.tgz",
+@@ -10715,6 +10851,25 @@
+       "resolved": "https://registry.npmjs.org/react-is/-/react-is-16.13.0.tgz",
+       "integrity": "sha512-GFMtL0vHkiBv9HluwNZTggSn/sCyEt9n02aM0dSAjGGyqyNlAyftYm4phPxdvCigG15JreC5biwxCgTAJZ7yAA=="
+     },
++    "react-lifecycles-compat": {
++      "version": "3.0.4",
++      "resolved": "https://registry.npmjs.org/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz",
++      "integrity": "sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA=="
++    },
++    "react-overlays": {
++      "version": "2.1.1",
++      "resolved": "https://registry.npmjs.org/react-overlays/-/react-overlays-2.1.1.tgz",
++      "integrity": "sha512-gaQJwmb8Ij2IGVt4D1HmLtl4A0mDVYxlsv/8i0dHWK7Mw0kNat6ORelbbEWzaXTK1TqMeQtJw/jraL3WOADz3w==",
++      "requires": {
++        "@babel/runtime": "^7.4.5",
++        "@restart/hooks": "^0.3.12",
++        "dom-helpers": "^5.1.0",
++        "popper.js": "^1.15.0",
++        "prop-types": "^15.7.2",
++        "uncontrollable": "^7.0.0",
++        "warning": "^4.0.3"
++      }
++    },
+     "react-scripts": {
+       "version": "3.4.0",
+       "resolved": "https://registry.npmjs.org/react-scripts/-/react-scripts-3.4.0.tgz",
+@@ -10775,6 +10930,17 @@
+         "workbox-webpack-plugin": "4.3.1"
+       }
+     },
++    "react-transition-group": {
++      "version": "4.3.0",
++      "resolved": "https://registry.npmjs.org/react-transition-group/-/react-transition-group-4.3.0.tgz",
++      "integrity": "sha512-1qRV1ZuVSdxPlPf4O8t7inxUGpdyO5zG9IoNfJxSO0ImU2A1YWkEQvFPuIPZmMLkg5hYs7vv5mMOyfgSkvAwvw==",
++      "requires": {
++        "@babel/runtime": "^7.5.5",
++        "dom-helpers": "^5.0.1",
++        "loose-envify": "^1.4.0",
++        "prop-types": "^15.6.2"
++      }
++    },
+     "read-pkg": {
+       "version": "3.0.0",
+       "resolved": "https://registry.npmjs.org/read-pkg/-/read-pkg-3.0.0.tgz",
+@@ -12633,6 +12799,22 @@
+       "resolved": "https://registry.npmjs.org/typedarray/-/typedarray-0.0.6.tgz",
+       "integrity": "sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c="
+     },
++    "ua-parser-js": {
++      "version": "0.7.21",
++      "resolved": "https://registry.npmjs.org/ua-parser-js/-/ua-parser-js-0.7.21.tgz",
++      "integrity": "sha512-+O8/qh/Qj8CgC6eYBVBykMrNtp5Gebn4dlGD/kKXVkJNDwyrAwSIqwz8CDf+tsAIWVycKcku6gIXJ0qwx/ZXaQ=="
++    },
++    "uncontrollable": {
++      "version": "7.1.1",
++      "resolved": "https://registry.npmjs.org/uncontrollable/-/uncontrollable-7.1.1.tgz",
++      "integrity": "sha512-EcPYhot3uWTS3w00R32R2+vS8Vr53tttrvMj/yA1uYRhf8hbTG2GyugGqWDY0qIskxn0uTTojVd6wPYW9ZEf8Q==",
++      "requires": {
++        "@babel/runtime": "^7.6.3",
++        "@types/react": "^16.9.11",
++        "invariant": "^2.2.4",
++        "react-lifecycles-compat": "^3.0.4"
++      }
++    },
+     "unicode-canonical-property-names-ecmascript": {
+       "version": "1.0.4",
+       "resolved": "https://registry.npmjs.org/unicode-canonical-property-names-ecmascript/-/unicode-canonical-property-names-ecmascript-1.0.4.tgz",
+@@ -12919,6 +13101,14 @@
+         "makeerror": "1.0.x"
+       }
+     },
++    "warning": {
++      "version": "4.0.3",
++      "resolved": "https://registry.npmjs.org/warning/-/warning-4.0.3.tgz",
++      "integrity": "sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==",
++      "requires": {
++        "loose-envify": "^1.0.0"
++      }
++    },
+     "watchpack": {
+       "version": "1.6.0",
+       "resolved": "https://registry.npmjs.org/watchpack/-/watchpack-1.6.0.tgz",
