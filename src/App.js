@@ -8,7 +8,7 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-        <h1>A basic Todo List App</h1>
+        <h1 className="bg-dark text-light">A basic Todo List App</h1>
       <TodoList />
 
     </div>

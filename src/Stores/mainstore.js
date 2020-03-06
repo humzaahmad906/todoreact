@@ -1,6 +1,6 @@
 import dispatcher from '../dispatcher';
 import {EventEmitter} from 'events';
-import * as TodoActions from  '../Actions/mainactions';
+// import * as TodoActions from  '../Actions/mainactions';
 class TodoStore extends EventEmitter{
     constructor(props){
         super(props);
@@ -14,13 +14,17 @@ class TodoStore extends EventEmitter{
         // this.todoList.push(this.todoElement);
         // this.todoElement.text = "";
         // this.todoElement.id = null;
-        this.emit(TodoActions.eventsAvailable.objectAdded);
+        this.todoList.push(text);
+        this.emit('NEW_ADDED');
     }
     handleAction = (action) => {
+
         switch(action.type){
-            case TodoActions.eventsAvailable.objectAdded:
-                this.createTodo("hmm");
+            case 'ADD_NEW':
+                this.createTodo(action.data.text);
                 break;
+            default:
+                console.log(action.type);
         }
     }
 }
