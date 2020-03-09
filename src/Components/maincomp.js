@@ -1,84 +1,93 @@
 import React from 'react';
-import Button from 'react-bootstrap/Button'
-import 'bootstrap/dist/css/bootstrap.min.css';
-import todoStore from '../Stores/mainstore'
-import * as TodoActions from  '../Actions/mainactions';
+import Button from 'react-bootstrap/Button';
+import CanvasOperations from '../Canvas/maincanvas'
 import dispatcher from "../dispatcher";
 
 
-class TodoList extends React.Component{
+class OperationClass extends React.Component{
     constructor(props){
         super(props);
-        this.state = {todoList: [],
-                        text: ""}
+        this.state = {
+            text: "",
+            removeTrigger: false
+        }
+        this.objectCount = 0;
 
     }
     componentDidMount() {
-        todoStore.on(TodoActions.eventsAvailable.objectAdded, () => {
-            let dummy = this.getText();
-            console.log(dummy);
-            let dummyId = Date.now();
+        if (this.state.removeTrigger === true){
+            this.objectRemove();
+            console.log("wtf man")
 
-            todoStore.todoList.push({
-                text: dummy,
-                id: dummyId
-            });
-            const listItems = todoStore.todoList.map((item) =>
-                <li key = {item.id}>{item.text}</li>
-            );
-        })
-        todoStore.on('NEW_ADDED',()=>{
-            const itemsList = todoStore.todoList;
-            this.setState({
-                todoList:itemsList,
-                text:'',
-            });
-        })
+        }
     }
-    createTodo = () => {
-        dispatcher.dispatch({
-            type:'ADD_NEW',
-            data:{
-                text:this.state.text
-            }
-        });
+    updateLayer = () => {
+        let layer = <li>
+            {this.objectCount}
+                    </li>
 
     }
-    textUpdate = (e) => {
+
+    onType = (e) => {
         this.setState({
-            text:  e.target.value
+            text: e.target.value
         })
-
     }
     getText = () => {
-        return this.state.text
+        return this.state.text;
     }
+    sendText = () => {
+        let textData = this.getText();
+        dispatcher.dispatch({
+            type: 'TEXT_ADD_TRIGGER',
+            data:{
+                text: textData
+            }
+        })
+    }
+    textRemove=()=>{
+        dispatcher.dispatch({
+            type: 'REMOVE_TEXT',
 
+        })
+        this.setState({
+            removeTrigger: true
+        })
+    }
+    objectRemove = () => {
+
+        dispatcher.dispatch({
+            type: 'REMOVE_OBJ',
+
+        })
+        this.setState({
+            removeTrigger: false
+        })
+    }
     render(){
+        // console.log(this.state.removeTrigger)
 
-        const listItems = this.state.todoList.map((item,index) =>
-            <li className='text-dark border-danger' key = {index}>{item}</li>
-        );
-        // console.log(this.todos.text);
-        return (
-        <div className='row'>
-            <div className='col-5 text-left mx-3'>
-                {listItems}
+        return(
+
+
+            <div className='row'>
+                <div className='col'>
+                    <div className='row justify-content-center'>
+                        <textarea cols = '50' onChange = {this.onType} placeholder = "Enter Task Here"></textarea>
+                    </div>
+                    <div className='row'>
+                        <Button className = "btn-primary btn-block m-auto" onClick = {this.sendText}>Add Task</Button>
+
+                        <Button className = "btn-danger btn-block m-auto" onClick = {this.textRemove}>Remove Task</Button>
+                    </div>
+
+                </div>
+                <div className='col'>
+                    <CanvasOperations/>
+                </div>
             </div>
-            <div className='col-5 justify-content-left bg-gray' >
-                <textarea id = 'text' rows = "4" onChange = {this.textUpdate} placeholder="Enter Task Here">
 
-                </textarea>
-                <Button onClick = {this.createTodo} className = 'py-0 b-0'>
-                    Add
-                </Button>
-            </div>
-
-        </div>
-
-        );
-
+        )
     }
 }
-
-export default TodoList;
+export default OperationClass;

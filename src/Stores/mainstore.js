@@ -1,27 +1,39 @@
 import dispatcher from '../dispatcher';
 import {EventEmitter} from 'events';
-// import * as TodoActions from  '../Actions/mainactions';
 class TodoStore extends EventEmitter{
     constructor(props){
         super(props);
-        this.todoList = []
+        this.todoText = "";
+        // this.removeTrigger = false;
 
 
     }
     createTodo(text){
-        // this.todoElement.text = text;
-        // this.todoElement.id = Date.now();
-        // this.todoList.push(this.todoElement);
-        // this.todoElement.text = "";
-        // this.todoElement.id = null;
-        this.todoList.push(text);
-        this.emit('NEW_ADDED');
+        this.todoText = text;
+        // console.log(text)
+        // console.log( this.todoText)
+        this.emit('TASK_ADDED');
+    }
+    removeTask =() => {
+        this.emit('TASK_REMOVED');
+        // this.removeTrigger = true;
+        console.log("remove text is triggered")
+    }
+    removeObject = () => {
+        this.emit('OBJECT_REMOVED');
+        console.log("object is gonna removed")
     }
     handleAction = (action) => {
-
         switch(action.type){
-            case 'ADD_NEW':
+            case 'TEXT_ADD_TRIGGER':
+                // console.log(action.data.text);
                 this.createTodo(action.data.text);
+                break;
+            case 'REMOVE_TEXT':
+                this.removeTask();
+                break;
+            case 'REMOVE_OBJ':
+                this.removeObject();
                 break;
             default:
                 console.log(action.type);
