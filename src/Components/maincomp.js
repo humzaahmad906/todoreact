@@ -2,6 +2,7 @@ import React from 'react';
 import Button from 'react-bootstrap/Button';
 import CanvasOperations from '../Canvas/maincanvas'
 import dispatcher from "../dispatcher";
+import SortableList from "../Components/layers"
 
 
 class OperationClass extends React.Component{
@@ -79,6 +80,7 @@ class OperationClass extends React.Component{
                         <Button className = "btn-primary btn-block m-auto" onClick = {this.sendText}>Add Task</Button>
 
                         <Button className = "btn-danger btn-block m-auto" onClick = {this.textRemove}>Remove Task</Button>
+                        <SortableList/>
                     </div>
 
                 </div>

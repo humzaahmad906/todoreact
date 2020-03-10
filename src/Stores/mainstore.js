@@ -3,6 +3,7 @@ import {EventEmitter} from 'events';
 class TodoStore extends EventEmitter{
     constructor(props){
         super(props);
+        this.index = [];
         this.todoText = "";
         // this.removeTrigger = false;
 
@@ -21,7 +22,13 @@ class TodoStore extends EventEmitter{
     }
     removeObject = () => {
         this.emit('OBJECT_REMOVED');
+
         console.log("object is gonna removed")
+    }
+    changeLayers = (ind) => {
+        this.emit('LAYERS_CHANGED');
+        this.index = ind;
+        // console.log(ind)
     }
     handleAction = (action) => {
         switch(action.type){
@@ -34,6 +41,9 @@ class TodoStore extends EventEmitter{
                 break;
             case 'REMOVE_OBJ':
                 this.removeObject();
+                break;
+            case 'CHANGE_LAYERS':
+                this.changeLayers(action.data.index);
                 break;
             default:
                 console.log(action.type);

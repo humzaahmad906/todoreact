@@ -1,7 +1,7 @@
 import React from 'react';
 import todoStore from '../Stores/mainstore'
 import {fabric} from 'fabric';
-import { sortable } from 'react-sortable';
+
 // import {lightgray} from "color-name";
 let count = 0;
 class CanvasOperations extends React.Component{
@@ -13,9 +13,6 @@ class CanvasOperations extends React.Component{
             item: 0
         }
     }
-    addtext = () => {
-
-    }
 
     componentDidMount(){
         this.canvas = new fabric.Canvas('c', {
@@ -26,23 +23,24 @@ class CanvasOperations extends React.Component{
         );
         this.canvas.on('object:added', (e) => {
             let objectAdded = e.target;
-
+            objectAdded.id = count;
+            count++;
 
         })
         this.canvas.on('mouse:up', (options) => {
-            this.canvas.remove(this.canvas.getActiveObject());
-            // todoStore.on('OBJECT_REMOVED', ()=>{
-            // while(true){
-            // if(this.canvas.getActiveObject().length != 0){
-            //     this.canvas.remove(this.canvas.getActiveObject());
-            // }
-            // else{
-            //
-            // }
+            // this.canvas.remove(this.canvas.getActiveObject());
+            todoStore.on('OBJECT_REMOVED', ()=>{
+            while(true){
+            if(this.canvas.getActiveObject().length != 0){
+                this.canvas.remove(this.canvas.getActiveObject());
+            }
+            else{
 
-            // }
+            }
 
-            // })
+            }
+
+            })
         });
 
         todoStore.on('TASK_ADDED',()=>{
@@ -57,13 +55,51 @@ class CanvasOperations extends React.Component{
             this.canvas.add(new fabric.Text(todoStore.todoText, {
                 fontFamily: 'Delicious_500',
                 left: 100,
-                top: 40*this.state.item,
-                selectable: false
+                // top: 40*this.state.item,
+                top: 40,
+                selectable: true
             }));
 
 
             // this.canvas.renderAll();
         });
+        todoStore.on('LAYERS_CHANGED',()=>{
+            let i, j;
+            // console.log(todoStore.index)
+            todoStore.index.map((ind, id)=> {
+
+                for (i=0; i<this.canvas.getObjects().length; i++){
+                    if(this.canvas.getObjects()[i].id === id){
+                        const distance = ind-this.canvas.getObjects()[i].id;
+                        console.log(distance)
+                        if(distance < 0){
+                            for (j =0; j<-distance; j++ ){
+                                console.log(this.canvas.getObjects()[i]);
+                                // this.canvas.getObjects()[i].set({
+                                //     id: ind
+                                // })
+                                this.canvas.getObjects()[i].sendBackwards();
+
+                            }
+                        }
+                        else if(distance > 0){
+                            for (j =0; j<distance; j++ ){
+                                console.log(this.canvas.getObjects()[i]);
+                                this.canvas.getObjects()[i].set({
+                                    id: ind
+                                })
+                                this.canvas.getObjects()[i].bringForward();
+
+                            }
+                        }
+                    }
+
+
+
+                }
+            })
+
+        })
         todoStore.on('TASK_REMOVED', ()=>{
             this.canvas.getObjects().forEach(
                 element => {
