@@ -26,9 +26,11 @@ class TodoStore extends EventEmitter{
         console.log("object is gonna removed")
     }
     changeLayers = (ind) => {
-        this.emit('LAYERS_CHANGED');
         this.index = ind;
-        // console.log(ind)
+        this.emit('LAYERS_CHANGED');
+
+
+        console.log(this.index)
     }
     handleAction = (action) => {
         switch(action.type){

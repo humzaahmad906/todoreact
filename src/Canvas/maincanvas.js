@@ -64,42 +64,93 @@ class CanvasOperations extends React.Component{
             // this.canvas.renderAll();
         });
         todoStore.on('LAYERS_CHANGED',()=>{
-            let i, j;
-            // console.log(todoStore.index)
-            todoStore.index.map((ind, id)=> {
 
-                for (i=0; i<this.canvas.getObjects().length; i++){
-                    if(this.canvas.getObjects()[i].id === id){
-                        const distance = ind-this.canvas.getObjects()[i].id;
-                        console.log(distance)
-                        if(distance < 0){
-                            for (j =0; j<-distance; j++ ){
-                                console.log(this.canvas.getObjects()[i]);
-                                // this.canvas.getObjects()[i].set({
-                                //     id: ind
-                                // })
-                                this.canvas.getObjects()[i].sendBackwards();
+            let newState = todoStore.index;
 
-                            }
-                        }
-                        else if(distance > 0){
-                            for (j =0; j<distance; j++ ){
-                                console.log(this.canvas.getObjects()[i]);
-                                this.canvas.getObjects()[i].set({
-                                    id: ind
-                                })
-                                this.canvas.getObjects()[i].bringForward();
-
-                            }
-                        }
-                    }
-
-
-
-                }
+            let oldState = []
+            newState.forEach((_, index)=>{
+                oldState.push(index);
             })
+            console.log(oldState);
+            let i, j;
+            for(i=0; i<newState.length; i++){
+                for(j=0; j<oldState.length; j++){
+                    if(oldState[j] === newState[i]){
+                        let distance = j - i;
+
+                        let l;
+                        // let realIndex;
+                        let obj;
+                        for (l=0; l<this.canvas.getObjects().length; l++){
+                            if(this.canvas.getObjects()[l].id === oldState[j]){
+                                obj = this.canvas.getObjects()[l];
+                            }
+                        }
+                        let k;
+                        if (distance > 0){
+
+                            for (k=0; k<=distance; k++){
+                                obj.sendBackwards()
+                            }
+                        }
+                        else if(distance < 0){
+                            for (k=0; k<=-distance; k++){
+                                obj.bringForward()
+                            }
+                        }
+                        let temp = oldState;
+
+                        oldState[j] = newState[j];
+                        oldState[i] = temp[j];
+                        let m;
+                        if (distance > 0){
+                            for(m=i; m<j; m++){
+
+                            }
+                        }
+
+                    }
+                }
+            }
 
         })
+        // todoStore.on('LAYERS_CHANGED',()=>{
+        //     let i, j;
+        //     // console.log(todoStore.index)
+        //     todoStore.index.map((ind, id)=> {
+        //
+        //         for (i=0; i<this.canvas.getObjects().length; i++){
+        //             if(this.canvas.getObjects()[i].id === id){
+        //                 const distance = ind-this.canvas.getObjects()[i].id;
+        //                 console.log(distance)
+        //                 if(distance < 0){
+        //                     for (j =0; j<-distance; j++ ){
+        //                         console.log(this.canvas.getObjects()[i]);
+        //                         // this.canvas.getObjects()[i].set({
+        //                         //     id: ind
+        //                         // })
+        //                         this.canvas.getObjects()[i].sendBackwards();
+        //
+        //                     }
+        //                 }
+        //                 else if(distance > 0){
+        //                     for (j =0; j<distance; j++ ){
+        //                         console.log(this.canvas.getObjects()[i]);
+        //                         this.canvas.getObjects()[i].set({
+        //                             id: ind
+        //                         })
+        //                         this.canvas.getObjects()[i].bringForward();
+        //
+        //                     }
+        //                 }
+        //             }
+        //
+        //
+        //
+        //         }
+        //     })
+        //
+        // })
         todoStore.on('TASK_REMOVED', ()=>{
             this.canvas.getObjects().forEach(
                 element => {
