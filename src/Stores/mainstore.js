@@ -30,7 +30,8 @@ class TodoStore extends EventEmitter{
         this.emit('LAYERS_CHANGED');
 
 
-        console.log(this.index)
+        console.log(this.index);
+        this.index = [];
     }
     handleAction = (action) => {
         switch(action.type){
