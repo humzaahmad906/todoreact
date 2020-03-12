@@ -4,7 +4,10 @@ class TodoStore extends EventEmitter{
     constructor(props){
         super(props);
         this.index = [];
+        this.sortedElement = [];
+        this.prevIndex = [];
         this.todoText = "";
+
         // this.removeTrigger = false;
 
 
@@ -26,12 +29,24 @@ class TodoStore extends EventEmitter{
         console.log("object is gonna removed")
     }
     changeLayers = (ind) => {
-        this.index = ind;
-        this.emit('LAYERS_CHANGED');
-
-
-        console.log(this.index);
         this.index = [];
+        this.index = ind;
+        // console.log(ind)
+        // console.log(this.index)
+        this.emit('LAYERS_CHANGED');
+        this.prevIndex = ind.slice(0, ind.length);
+
+        // console.log(this.index);
+
+    }
+    elementAdded = (act) =>{
+        this.sortedElement.push(act);
+        // console.log(this.sortedElement);
+        this.emit('ADDED_ELEMENTS');
+    }
+    listSorted = (act) => {
+        this.sortedElement = act;
+        this.emit('RE_SORTED')
     }
     handleAction = (action) => {
         switch(action.type){
@@ -42,8 +57,14 @@ class TodoStore extends EventEmitter{
             case 'REMOVE_TEXT':
                 this.removeTask();
                 break;
+            case 'ADDED_ELEMENT':
+                this.elementAdded(action.data);
+                break;
             case 'REMOVE_OBJ':
                 this.removeObject();
+                break;
+            case 'LIST_SORTED':
+                this.listSorted(action.data);
                 break;
             case 'CHANGE_LAYERS':
                 this.changeLayers(action.data.index);
